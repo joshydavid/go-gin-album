@@ -1,4 +1,4 @@
-module go-gin
+module go-gin-album
 
 go 1.25.2
 

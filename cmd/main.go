@@ -1,7 +1,7 @@
 package main
 
 import (
-	"go-gin/api"
+	"go-gin-album/api"
 
 	"github.com/gin-gonic/gin"
 )
