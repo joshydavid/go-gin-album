@@ -1,6 +1,9 @@
 package service
 
-import "go-gin/internal/model"
+import (
+	"errors"
+	"go-gin/internal/model"
+)
 
 var albums = []model.Album{
 	{ID: "1", Title: "Blue Train", Artist: "John Coltrane", Price: 56.99},
@@ -10,4 +13,13 @@ var albums = []model.Album{
 
 func GetAllAlbums() ([]model.Album, error) {
 	return albums, nil
+}
+
+func AddAlbum(newAlbum model.Album) (string, error) {
+	if newAlbum.Title == "" {
+		return "", errors.New("album title cannot be empty")
+	}
+
+	albums = append(albums, newAlbum)
+	return "Album added successfully", nil
 }

@@ -10,4 +10,5 @@ import (
 func SetupRoutes(router *gin.Engine) {
 	router.GET(constant.HealthCheck, handler.GetHealthCheck)
 	router.GET(constant.Albums, handler.GetAlbums)
+	router.POST(constant.Albums, handler.AddAlbum)
 }
