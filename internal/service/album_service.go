@@ -2,7 +2,7 @@ package service
 
 import (
 	"errors"
-	"go-gin/internal/model"
+	"go-gin-album/internal/model"
 )
 
 var albums = []model.Album{
@@ -22,6 +22,16 @@ func GetAlbumByID(id string) (model.Album, error) {
 		}
 	}
 	return model.Album{}, errors.New("album not found")
+}
+
+func DeleteAlbumByID(id string) (string, error) {
+	for i, a := range albums {
+		if a.ID == id {
+			albums = append(albums[:i], albums[i+1:]...)
+			return "Album deleted successfully", nil
+		}
+	}
+	return "", errors.New("album not found")
 }
 
 func AddAlbum(newAlbum model.Album) (string, error) {

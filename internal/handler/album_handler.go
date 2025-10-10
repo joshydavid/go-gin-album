@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"go-gin/internal/model"
-	"go-gin/internal/service"
+	"go-gin-album/internal/model"
+	"go-gin-album/internal/service"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -25,6 +25,16 @@ func GetAlbumByID(c *gin.Context) {
 		return
 	}
 	c.IndentedJSON(http.StatusOK, album)
+}
+
+func DeleteAlbumByID(c *gin.Context) {
+	id := c.Param("id")
+	message, err := service.DeleteAlbumByID(id)
+	if err != nil {
+		c.IndentedJSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+	c.IndentedJSON(http.StatusOK, gin.H{"message": message})
 }
 
 func AddAlbum(c *gin.Context) {
