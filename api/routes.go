@@ -1,11 +1,13 @@
 package api
 
-import "github.com/gin-gonic/gin"
+import (
+	"go-gin/internal/constant"
+	"go-gin/internal/handler"
+
+	"github.com/gin-gonic/gin"
+)
 
 func SetupRoutes(router *gin.Engine) {
-	router.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
+	router.GET(constant.HealthCheck, handler.GetHealthCheck)
+	router.GET(constant.Albums, handler.GetAlbums)
 }
