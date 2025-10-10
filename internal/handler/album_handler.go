@@ -17,6 +17,16 @@ func GetAlbums(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, albums)
 }
 
+func GetAlbumByID(c *gin.Context) {
+	id := c.Param("id")
+	album, err := service.GetAlbumByID(id)
+	if err != nil {
+		c.IndentedJSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+	c.IndentedJSON(http.StatusOK, album)
+}
+
 func AddAlbum(c *gin.Context) {
 	var newAlbum model.Album
 	if err := c.BindJSON(&newAlbum); err != nil {

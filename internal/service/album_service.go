@@ -15,6 +15,15 @@ func GetAllAlbums() ([]model.Album, error) {
 	return albums, nil
 }
 
+func GetAlbumByID(id string) (model.Album, error) {
+	for _, a := range albums {
+		if a.ID == id {
+			return a, nil
+		}
+	}
+	return model.Album{}, errors.New("album not found")
+}
+
 func AddAlbum(newAlbum model.Album) (string, error) {
 	if newAlbum.Title == "" {
 		return "", errors.New("album title cannot be empty")
