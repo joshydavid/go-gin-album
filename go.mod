@@ -1,4 +1,4 @@
-module gin-quickstart
+module go-gin
 
 go 1.25.2
 

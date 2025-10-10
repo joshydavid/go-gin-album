@@ -1,7 +1,7 @@
 package main
 
 import (
-	"gin-quickstart/api"
+	"go-gin/api"
 
 	"github.com/gin-gonic/gin"
 )
