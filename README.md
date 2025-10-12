@@ -10,14 +10,14 @@ A small example REST API written in Go using the Gin web framework. This project
 
 ## ⚙️ Getting Started
 
-1. Clone the repository
+Clone the repository
 
 ```sh
 git clone https://github.com/joshydavid/go-gin-album.git
 cd go-gin-album
 ```
 
-2. Run the server
+Run the server
 
 ```sh
 go run ./cmd
@@ -25,7 +25,7 @@ go run ./cmd
 
 By default Gin's `router.Run()` will start the server on port 8080 at `http://localhost:8080`.
 
-## Build
+## 🚧 Build
 
 Create a binary with:
 
