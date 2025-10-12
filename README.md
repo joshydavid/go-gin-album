@@ -67,19 +67,19 @@ DELETE /api/v1/albums/:id
 List all albums
 
 ```sh
-curl -s http://localhost:8080/albums | jq
+curl -s http://localhost:8080/api/v1/albums | jq
 ```
 
 Get album by id
 
 ```sh
-curl -s http://localhost:8080/albums/1 | jq
+curl -s http://localhost:8080/api/v1/albums/1 | jq
 ```
 
 Add an album
 
 ```sh
-curl -X POST http://localhost:8080/albums \
+curl -X POST http://localhost:8080/api/v1/albums \
  -H "Content-Type: application/json" \
  -d '{"id":"4","title":"Kind of Blue","artist":"Miles Davis","price":29.99}'
 ```
@@ -87,7 +87,7 @@ curl -X POST http://localhost:8080/albums \
 Delete an album
 
 ```sh
-curl -X DELETE http://localhost:8080/albums/4
+curl -X DELETE http://localhost:8080/api/v1/albums/4
 ```
 
 ## 📁 Project Structure
