@@ -1,15 +1,14 @@
-
-# Go (Golang) Gin Album API
+# 🐹 Go (Golang) Gin Album API
 
 A small example REST API written in Go using the Gin web framework. This project demonstrates basic CRUD-style endpoints for managing a simple in-memory collection of music albums.
 
-## Features
+## 🚀 Features
 
 - Lightweight HTTP server using Go (Golang) Gin
 - In-memory album store (example data in `internal/service/album_service.go`)
 - Endpoints for listing, retrieving, creating, and deleting albums
 
-## Getting Started
+## ⚙️ Getting Started
 
 1. Clone the repository
 
@@ -40,17 +39,19 @@ Then run it:
 ./bin/go-gin-album
 ```
 
-## API Endpoints
+## 💬 API Endpoints
 
-The routes are registered in `api/routes.go`. Available endpoints:
+The routes are registered in `api/routes.go`.
 
-- GET `/healthcheck` - simple health check
-- GET `/albums` - return all albums
-- GET `/albums/:id` - return a single album by ID
-- POST `/albums` - add a new album (JSON body)
-- DELETE `/albums/:id` - delete an album by ID
+```http
+GET /api/v1/healthcheck
+GET /api/v1/albums
+POST /api/v1/albums
+GET /api/v1/albums/:id
+DELETE /api/v1/albums/:id
+```
 
-## Example Album JSON
+## ✏️ Example Album JSON
 
 ```json
 {
@@ -61,7 +62,7 @@ The routes are registered in `api/routes.go`. Available endpoints:
 }
 ```
 
-## cURL examples
+## ✏️ cURL examples
 
 List all albums
 
@@ -89,7 +90,7 @@ Delete an album
 curl -X DELETE http://localhost:8080/albums/4
 ```
 
-## Project Structure
+## 📁 Project Structure
 
 Key files and folders:
 
@@ -100,7 +101,7 @@ Key files and folders:
 - `internal/model/` — domain models (e.g., `Album`)
 - `internal/constant/` — route constants
 
-## Data Model
+## 💽 Data Model
 
 The album model is defined in `internal/model/album.go`:
 
@@ -113,7 +114,7 @@ type Album struct {
 }
 ```
 
-## Notes
+## 📝 Notes
 
 - This project keeps albums in memory (slice in `internal/service/album_service.go`). For production use replace the in-memory store with a persistent database and add validation, logging, and tests.
 - Add request validation and better error responses.
