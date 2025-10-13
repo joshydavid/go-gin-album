@@ -1,12 +1,13 @@
 # 🐹 Go (Golang) Gin Album API
 
-A small example REST API written in Go using the Gin web framework. This project demonstrates basic CRUD-style endpoints for managing a simple in-memory collection of music albums.
+A small example REST API written in Go using the Gin web framework. This project demonstrates basic CRUD-style endpoints for managing a simple collection of music albums.
 
 ## 🚀 Features
 
 - Lightweight HTTP server using Go (Golang) Gin
-- In-memory album store (example data in `internal/service/album_service.go`)
 - Endpoints for listing, retrieving, creating, and deleting albums
+- Data stored in PostgreSQL
+- API documentation via Swagger
 
 ## ⚙️ Getting Started
 
@@ -80,7 +81,7 @@ Add an album
 ```sh
 curl -X POST http://localhost:8080/api/v1/albums \
  -H "Content-Type: application/json" \
- -d '{"id":"4","title":"Kind of Blue","artist":"Miles Davis","price":29.99}'
+ -d '{"title":"Kind of Blue","artist":"Miles Davis","price":29.99}'
 ```
 
 Delete an album
@@ -93,12 +94,17 @@ curl -X DELETE http://localhost:8080/api/v1/albums/4
 
 Key files and folders:
 
-- `cmd/` — application entrypoint (`cmd/main.go`)
-- `api/routes.go` — route registration
-- `internal/handler/` — Gin handlers for each endpoint
-- `internal/service/` — simple in-memory service layer and sample data
-- `internal/model/` — domain models (e.g., `Album`)
-- `internal/constant/` — route constants
+- `cmd/` - application entrypoint (`cmd/main.go`)
+- `api/routes.go` - route registration
+- `internal/config/` - database configurations
+- `internal/db/` - database set up
+- `internal/dto/` - map model to client response
+- `internal/server/` - server set up
+- `internal/repository/` - repository interfaces and concrete implementations
+- `internal/handler/` - Gin handlers for each endpoint
+- `internal/service/` - service layer where it contains business logic
+- `internal/model/` - domain models (e.g., `Album`)
+- `internal/constant/` - route constants
 
 ## 💽 Data Model
 
@@ -106,15 +112,17 @@ The album model is defined in `internal/model/album.go`:
 
 ```go
 type Album struct {
-  ID     string  `json:"id"`
+  gorm.Model
   Title  string  `json:"title"`
   Artist string  `json:"artist"`
   Price  float64 `json:"price"`
 }
 ```
 
-## 📝 Notes
+## 🚀 Acknowledgement
 
-- This project keeps albums in memory (slice in `internal/service/album_service.go`). For production use replace the in-memory store with a persistent database and add validation, logging, and tests.
-- Add request validation and better error responses.
-- Add unit/integration tests and a CI workflow.
+<a href="https://www.linkedin.com/in/joshydavid/">
+  <img src="https://github.com/user-attachments/assets/4dfe0c89-8ced-4e08-bcf3-6261bdbb956d" width="80">
+</a> &nbsp;
+
+Developed by [Joshua](https://joshydavid.com)
