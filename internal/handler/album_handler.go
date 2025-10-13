@@ -1,30 +1,43 @@
 package handler
 
 import (
+	"net/http"
+	"strconv"
+	"strings"
+
+	"go-gin-album/internal/dto"
 	"go-gin-album/internal/model"
 	"go-gin-album/internal/service"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-// GetAlbums godoc
+type AlbumHandler struct {
+	AlbumService *service.AlbumService
+}
+
+func NewAlbumHandler(s *service.AlbumService) *AlbumHandler {
+	return &AlbumHandler{AlbumService: s}
+}
+
+// GetAllAlbums godoc (Renamed from GetAlbums for clarity/convention)
 // @Summary List all albums
 // @Schemes
 // @Description Retrieves a list of all music albums from the collection.
 // @Tags albums
 // @Accept json
 // @Produce json
-// @Success 200 {array} model.Album
+// @Success 200 {array} dto.AlbumResponse
 // @Failure	500 {object} map[string]string "Internal Server Error"
 // @Router /albums [get]
-func GetAlbums(c *gin.Context) {
-	albums, err := service.GetAllAlbums()
+func (h *AlbumHandler) GetAllAlbums(c *gin.Context) {
+	albums, err := h.AlbumService.GetAllAlbums()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.IndentedJSON(http.StatusOK, albums)
+	response := dto.ToResponseSlice(albums)
+	c.IndentedJSON(http.StatusOK, response)
 }
 
 // GetAlbumByID godoc
@@ -35,17 +48,25 @@ func GetAlbums(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param id path string true "Album ID"
-// @Success 200 {object} model.Album
+// @Success 200 {object} dto.AlbumResponse
 // @Failure 404 {object} map[string]string "Album not found"
+// @Failure 500 {object} map[string]string "Internal Server Error"
 // @Router /albums/{id} [get]
-func GetAlbumByID(c *gin.Context) {
+func (h *AlbumHandler) GetAlbumByID(c *gin.Context) {
 	id := c.Param("id")
-	album, err := service.GetAlbumByID(id)
+
+	album, err := h.AlbumService.GetAlbumByID(id)
+
 	if err != nil {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		if strings.Contains(err.Error(), "album not found") {
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.IndentedJSON(http.StatusOK, album)
+	response := dto.MapModelToResponse(*album)
+	c.IndentedJSON(http.StatusOK, response)
 }
 
 // DeleteAlbumByID godoc
@@ -58,12 +79,25 @@ func GetAlbumByID(c *gin.Context) {
 // @Param id path string true "Album ID"
 // @Success 204 {object} map[string]string "No Content"
 // @Failure 404 {object} map[string]string "Album not found"
+// @Failure 500 {object} map[string]string "Internal Server Error"
 // @Router /albums/{id} [delete]
-func DeleteAlbumByID(c *gin.Context) {
+func (h *AlbumHandler) DeleteAlbumByID(c *gin.Context) {
 	id := c.Param("id")
-	_, err := service.DeleteAlbumByID(id)
+	parsedID, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid album ID format. Must be a positive integer."})
+		return
+	}
+
+	uintID := uint(parsedID)
+	_, err = h.AlbumService.DeleteAlbumById(&uintID)
+
+	if err != nil {
+		if strings.Contains(err.Error(), "album not found") {
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.Status(http.StatusNoContent)
@@ -76,22 +110,29 @@ func DeleteAlbumByID(c *gin.Context) {
 // @Tags albums
 // @Accept json
 // @Produce json
-// @Param album body model.Album true "Album object to be created"
-// @Success 201 {object} model.Album
+// @Param album body dto.AlbumResponse true "Album object to be created"
+// @Success 201 {object} dto.AlbumResponse
 // @Failure 400 {object} map[string]string "Bad Request"
 // @Failure 500 {object} map[string]string "Internal Server Error"
 // @Router /albums [post]
-func AddAlbum(c *gin.Context) {
+func (h *AlbumHandler) AddAlbum(c *gin.Context) {
 	var newAlbum model.Album
 	if err := c.BindJSON(&newAlbum); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	createdAlbum, err := service.AddAlbum(newAlbum)
+	_, err := h.AlbumService.AddAlbum(newAlbum)
+
 	if err != nil {
+		if strings.Contains(err.Error(), "cannot be empty") {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusCreated, createdAlbum)
+
+	response := dto.MapModelToResponse(newAlbum)
+	c.JSON(http.StatusCreated, response)
 }

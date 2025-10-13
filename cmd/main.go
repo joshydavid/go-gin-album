@@ -1,8 +1,13 @@
 package main
 
 import (
+	"database/sql"
 	"go-gin-album/api"
+	"go-gin-album/internal/config"
+	"go-gin-album/internal/db"
 	"go-gin-album/internal/server"
+	"go-gin-album/internal/service"
+	"log"
 
 	"github.com/gin-gonic/gin"
 )
@@ -25,9 +30,27 @@ import (
 // @externalDocs.description  OpenAPI
 // @externalDocs.url          https://swagger.io/resources/open-api/
 func main() {
+	albumServiceDependency, sqlDB := initializeDependencies()
+	defer sqlDB.Close()
+
 	router := gin.Default()
 	router.SetTrustedProxies(nil)
-	api.SetupRoutes(router)
+	api.SetupRoutes(router, albumServiceDependency)
 	api.SetUpAPIDocs(router)
 	server.RunServer(router)
+}
+
+func initializeDependencies() (*service.AlbumService, *sql.DB) {
+	dbConfig := config.LoadDBConfig()
+	gormDB, err := db.ConnectDB(dbConfig)
+	if err != nil {
+		log.Fatalf("Failed to connect to database: %v", err)
+	}
+	sqlDB, err := gormDB.DB()
+	if err != nil {
+		log.Fatalf("Failed to get generic database object: %v", err)
+	}
+	albumService := db.InitializeServices(gormDB)
+
+	return albumService, sqlDB
 }

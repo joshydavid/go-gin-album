@@ -1,14 +1,18 @@
 basePath: /api/v1
 definitions:
-  model.Album:
+  dto.AlbumResponse:
     properties:
       artist:
+        example: Joshua David
         type: string
       id:
-        type: string
+        example: 1
+        type: integer
       price:
+        example: 39.99
         type: number
       title:
+        example: Blue Train
         type: string
     type: object
 externalDocs:
@@ -40,7 +44,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/model.Album'
+              $ref: '#/definitions/dto.AlbumResponse'
             type: array
         "500":
           description: Internal Server Error
@@ -61,14 +65,14 @@ paths:
         name: album
         required: true
         schema:
-          $ref: '#/definitions/model.Album'
+          $ref: '#/definitions/dto.AlbumResponse'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/model.Album'
+            $ref: '#/definitions/dto.AlbumResponse'
         "400":
           description: Bad Request
           schema:
@@ -110,6 +114,12 @@ paths:
             additionalProperties:
               type: string
             type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
       summary: Delete an album
       tags:
       - albums
@@ -129,9 +139,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.Album'
+            $ref: '#/definitions/dto.AlbumResponse'
         "404":
           description: Album not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
           schema:
             additionalProperties:
               type: string

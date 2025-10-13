@@ -1,7 +1,9 @@
 package model
 
+import "gorm.io/gorm"
+
 type Album struct {
-	ID     string  `json:"id"`
+	gorm.Model
 	Title  string  `json:"title"`
 	Artist string  `json:"artist"`
 	Price  float64 `json:"price"`
