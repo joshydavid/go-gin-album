@@ -55,7 +55,6 @@ DELETE /api/v1/albums/:id
 
 ```json
 {
- "id": "4",
  "title": "Kind of Blue",
  "artist": "Miles Davis",
  "price": 29.99

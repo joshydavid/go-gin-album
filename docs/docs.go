@@ -43,7 +43,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/model.Album"
+                                "$ref": "#/definitions/dto.AlbumResponse"
                             }
                         }
                     },
@@ -77,7 +77,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.Album"
+                            "$ref": "#/definitions/dto.AlbumResponse"
                         }
                     }
                 ],
@@ -85,7 +85,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/model.Album"
+                            "$ref": "#/definitions/dto.AlbumResponse"
                         }
                     },
                     "400": {
@@ -135,11 +135,20 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Album"
+                            "$ref": "#/definitions/dto.AlbumResponse"
                         }
                     },
                     "404": {
                         "description": "Album not found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -188,26 +197,39 @@ const docTemplate = `{
                                 "type": "string"
                             }
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
                     }
                 }
             }
         }
     },
     "definitions": {
-        "model.Album": {
+        "dto.AlbumResponse": {
             "type": "object",
             "properties": {
                 "artist": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Joshua David"
                 },
                 "id": {
-                    "type": "string"
+                    "type": "integer",
+                    "example": 1
                 },
                 "price": {
-                    "type": "number"
+                    "type": "number",
+                    "example": 39.99
                 },
                 "title": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Blue Train"
                 }
             }
         }
