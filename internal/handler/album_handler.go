@@ -61,12 +61,12 @@ func GetAlbumByID(c *gin.Context) {
 // @Router /albums/{id} [delete]
 func DeleteAlbumByID(c *gin.Context) {
 	id := c.Param("id")
-	message, err := service.DeleteAlbumByID(id)
+	_, err := service.DeleteAlbumByID(id)
 	if err != nil {
 		c.IndentedJSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
-	c.IndentedJSON(http.StatusNoContent, gin.H{"message": message})
+	c.Status(http.StatusNoContent)
 }
 
 // AddAlbum godoc
