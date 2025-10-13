@@ -2,29 +2,32 @@ package main
 
 import (
 	"go-gin-album/api"
-	"log"
-	"os"
+	"go-gin-album/server"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 )
 
+// @title           Music Album API
+// @version         1.0
+// @description     API documentation for Music Album service
+// @termsOfService  http://swagger.io/terms/
+
+// @contact.name   API Support
+// @contact.url    https://joshydavid.com
+// @contact.email  joshuadavidang@outlook.sg
+
+// @license.name  Apache 2.0
+// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host      localhost:8080
+// @BasePath  /api/v1
+
+// @externalDocs.description  OpenAPI
+// @externalDocs.url          https://swagger.io/resources/open-api/
 func main() {
 	router := gin.Default()
 	router.SetTrustedProxies(nil)
 	api.SetupRoutes(router)
-	RunServer(router)
-}
-
-func RunServer(router *gin.Engine) {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
-	router.Run(":" + port)
+	api.SetUpAPIDocs(router)
+	server.RunServer(router)
 }

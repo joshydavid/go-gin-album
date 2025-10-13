@@ -8,9 +8,13 @@ import (
 )
 
 func SetupRoutes(router *gin.Engine) {
-	router.GET(constant.HealthCheck, handler.GetHealthCheck)
-	router.GET(constant.Albums, handler.GetAlbums)
-	router.GET(constant.AlbumByID, handler.GetAlbumByID)
-	router.POST(constant.Albums, handler.AddAlbum)
-	router.DELETE(constant.AlbumByID, handler.DeleteAlbumByID)
+	v1 := router.Group(constant.BasePath)
+	{
+		v1.GET(constant.HealthCheck, handler.GetHealthCheck)
+		v1.GET(constant.Albums, handler.GetAlbums)
+		v1.GET(constant.AlbumByID, handler.GetAlbumByID)
+		v1.POST(constant.Albums, handler.AddAlbum)
+		v1.DELETE(constant.AlbumByID, handler.DeleteAlbumByID)
+	}
+
 }
