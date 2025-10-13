@@ -2,7 +2,7 @@ package main
 
 import (
 	"go-gin-album/api"
-	"go-gin-album/server"
+	"go-gin-album/internal/server"
 
 	"github.com/gin-gonic/gin"
 )
