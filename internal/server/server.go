@@ -1,19 +1,14 @@
 package server
 
 import (
-	"log"
+	"go-gin-album/pkg/util"
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 )
 
 func RunServer(router *gin.Engine) {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
+	util.LoadEnv()
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"

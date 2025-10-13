@@ -3,42 +3,59 @@ package service
 import (
 	"errors"
 	m "go-gin-album/internal/model"
+	"go-gin-album/internal/repository"
 )
 
-var albums = []m.Album{
-	{ID: "1", Title: "Blue Train", Artist: "John Coltrane", Price: 56.99},
-	{ID: "2", Title: "Jeru", Artist: "Gerry Mulligan", Price: 17.99},
-	{ID: "3", Title: "Sarah Vaughan and Clifford Brown", Artist: "Sarah Vaughan", Price: 39.99},
+type AlbumService struct {
+	Repo repository.AlbumRepository
 }
 
-func GetAllAlbums() ([]m.Album, error) {
+func NewAlbumService(repo repository.AlbumRepository) *AlbumService {
+	return &AlbumService{
+		Repo: repo,
+	}
+}
+
+func (s *AlbumService) GetAllAlbums() ([]m.Album, error) {
+	albums, err := s.Repo.FindAll()
+	if err != nil {
+		return nil, err
+	}
+
 	return albums, nil
 }
 
-func GetAlbumByID(id string) (m.Album, error) {
-	for _, a := range albums {
-		if a.ID == id {
-			return a, nil
-		}
+func (s *AlbumService) GetAlbumByID(id string) (*m.Album, error) {
+	albums, err := s.Repo.FindByID(id)
+	if err != nil {
+		return nil, errors.New("database error when retrieving album: " + err.Error())
 	}
-	return m.Album{}, errors.New("album not found")
+
+	if albums == nil {
+		return nil, errors.New("album not found")
+	}
+
+	return albums, nil
 }
 
-func DeleteAlbumByID(id string) (string, error) {
-	for i, a := range albums {
-		if a.ID == id {
-			albums = append(albums[:i], albums[i+1:]...)
-			return "Album deleted successfully", nil
-		}
+func (s *AlbumService) DeleteAlbumById(id *uint) (string, error) {
+	err := s.Repo.DeleteByID(id)
+	if err != nil {
+		return "", errors.New("database error when deleting album: " + err.Error())
 	}
-	return "", errors.New("album not found")
+
+	return "Album deleted", nil
 }
 
-func AddAlbum(newAlbum m.Album) (string, error) {
+func (s *AlbumService) AddAlbum(newAlbum m.Album) (string, error) {
 	if newAlbum.Title == "" {
 		return "", errors.New("album title cannot be empty")
 	}
 
-	albums = append(albums, newAlbum)
-	return "Album added successfully", nil
+	err := s.Repo.CreateAlbum(newAlbum)
+	if err != nil {
+		return "", errors.New("database error when adding album: " + err.Error())
+	}
+
+	return "Album added", nil
 }
