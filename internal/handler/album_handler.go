@@ -30,7 +30,6 @@ func NewAlbumHandler(s *service.AlbumService) *AlbumHandler {
 // @Success 200 {array} dto.AlbumResponse
 // @Failure	500 {object} map[string]string "Internal Server Error"
 // @Router /albums [get]
-// FIX: Attached to the receiver *AlbumHandler (h)
 func (h *AlbumHandler) GetAllAlbums(c *gin.Context) {
 	albums, err := h.AlbumService.GetAllAlbums()
 	if err != nil {
