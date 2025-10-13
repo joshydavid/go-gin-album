@@ -2,6 +2,7 @@ package api
 
 import (
 	"go-gin-album/docs"
+	"go-gin-album/internal/constant"
 
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
@@ -9,6 +10,6 @@ import (
 )
 
 func SetUpAPIDocs(router *gin.Engine) {
-	docs.SwaggerInfo.BasePath = "/api/v1"
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	docs.SwaggerInfo.BasePath = constant.BasePath
+	router.GET(constant.Swagger, ginSwagger.WrapHandler(swaggerfiles.Handler))
 }
