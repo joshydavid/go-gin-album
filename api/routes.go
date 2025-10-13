@@ -16,5 +16,4 @@ func SetupRoutes(router *gin.Engine) {
 		v1.POST(constant.Albums, handler.AddAlbum)
 		v1.DELETE(constant.AlbumByID, handler.DeleteAlbumByID)
 	}
-
 }
