@@ -29,7 +29,7 @@ func (s *AlbumService) GetAllAlbums() ([]m.Album, error) {
 func (s *AlbumService) GetAlbumByID(id *uint) (*m.Album, error) {
 	albums, err := s.Repo.FindByID(id)
 	if err != nil {
-		return nil, errors.New(err.Error())
+		return nil, err
 	}
 
 	if albums == nil {
@@ -42,7 +42,7 @@ func (s *AlbumService) GetAlbumByID(id *uint) (*m.Album, error) {
 func (s *AlbumService) DeleteAlbumById(id *uint) (string, error) {
 	err := s.Repo.DeleteByID(id)
 	if err != nil {
-		return "", errors.New(err.Error())
+		return "", err
 	}
 
 	return message.AlbumDeleted, nil
@@ -55,7 +55,7 @@ func (s *AlbumService) AddAlbum(newAlbum m.Album) (string, error) {
 
 	err := s.Repo.CreateAlbum(newAlbum)
 	if err != nil {
-		return "", errors.New(err.Error())
+		return "", err
 	}
 
 	return message.AlbumAdded, nil
