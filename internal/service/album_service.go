@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	message "go-gin-album/internal/constant"
 	m "go-gin-album/internal/model"
 	"go-gin-album/internal/repository"
 )
@@ -25,14 +26,14 @@ func (s *AlbumService) GetAllAlbums() ([]m.Album, error) {
 	return albums, nil
 }
 
-func (s *AlbumService) GetAlbumByID(id string) (*m.Album, error) {
+func (s *AlbumService) GetAlbumByID(id *uint) (*m.Album, error) {
 	albums, err := s.Repo.FindByID(id)
 	if err != nil {
-		return nil, errors.New("database error when retrieving album: " + err.Error())
+		return nil, err
 	}
 
 	if albums == nil {
-		return nil, errors.New("album not found")
+		return nil, errors.New(message.AlbumNotFound)
 	}
 
 	return albums, nil
@@ -41,21 +42,21 @@ func (s *AlbumService) GetAlbumByID(id string) (*m.Album, error) {
 func (s *AlbumService) DeleteAlbumById(id *uint) (string, error) {
 	err := s.Repo.DeleteByID(id)
 	if err != nil {
-		return "", errors.New("database error when deleting album: " + err.Error())
+		return "", err
 	}
 
-	return "Album deleted", nil
+	return message.AlbumDeleted, nil
 }
 
 func (s *AlbumService) AddAlbum(newAlbum m.Album) (string, error) {
 	if newAlbum.Title == "" {
-		return "", errors.New("album title cannot be empty")
+		return "", errors.New(message.AlbumTitleEmpty)
 	}
 
 	err := s.Repo.CreateAlbum(newAlbum)
 	if err != nil {
-		return "", errors.New("database error when adding album: " + err.Error())
+		return "", err
 	}
 
-	return "Album added", nil
+	return message.AlbumAdded, nil
 }
