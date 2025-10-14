@@ -23,7 +23,7 @@ func (r *PostgresAlbumRepository) FindAll() ([]m.Album, error) {
 	return albums, result.Error
 }
 
-func (r *PostgresAlbumRepository) FindByID(id string) (*m.Album, error) {
+func (r *PostgresAlbumRepository) FindByID(id *uint) (*m.Album, error) {
 	var album m.Album
 	result := r.DB.First(&album, "id = ?", id)
 

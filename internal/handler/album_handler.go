@@ -54,8 +54,14 @@ func (h *AlbumHandler) GetAllAlbums(c *gin.Context) {
 // @Router /albums/{id} [get]
 func (h *AlbumHandler) GetAlbumByID(c *gin.Context) {
 	id := c.Param("id")
+	parsedID, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid album ID format. Must be a positive integer."})
+		return
+	}
 
-	album, err := h.AlbumService.GetAlbumByID(id)
+	uintID := uint(parsedID)
+	album, err := h.AlbumService.GetAlbumByID(&uintID)
 
 	if err != nil {
 		if strings.Contains(err.Error(), "album not found") {
