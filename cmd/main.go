@@ -17,7 +17,7 @@ import (
 // @description     API documentation for Music Album service
 // @termsOfService  http://swagger.io/terms/
 
-// @contact.name   API Support
+// @contact.name   Joshua
 // @contact.url    https://joshydavid.com
 // @contact.email  joshuadavidang@outlook.sg
 

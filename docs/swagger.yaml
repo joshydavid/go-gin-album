@@ -22,7 +22,7 @@ host: localhost:8080
 info:
   contact:
     email: joshuadavidang@outlook.sg
-    name: API Support
+    name: Joshua
     url: https://joshydavid.com
   description: API documentation for Music Album service
   license:
