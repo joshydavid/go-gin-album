@@ -49,8 +49,12 @@ func (s *AlbumService) GetAllAlbums() ([]m.Album, error) {
 }
 
 func (s *AlbumService) GetAlbumByID(id *uint) (*m.Album, error) {
+	if id == nil {
+		return nil, errors.New(c.InvalidAlbumID)
+	}
+
 	ctx := context.Background()
-	albumKey := fmt.Sprintf("album:%d", *id)
+	albumKey := fmt.Sprintf(c.AlbumCacheKey, *id)
 	cachedData, err := s.RedisClient.Get(ctx, albumKey).Bytes()
 	if err == nil {
 		var album m.Album
@@ -83,7 +87,7 @@ func (s *AlbumService) DeleteAlbumById(id *uint) (string, error) {
 	}
 
 	ctx := context.Background()
-	albumKey := fmt.Sprintf("album:%d", *id)
+	albumKey := fmt.Sprintf(c.AlbumCacheKey, *id)
 	s.RedisClient.Del(ctx, albumKey)
 	s.RedisClient.Del(ctx, c.AllAlbumsCacheKey)
 
