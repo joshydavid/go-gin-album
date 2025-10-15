@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"go-gin-album/api"
 	"go-gin-album/internal/config"
@@ -32,6 +33,10 @@ import (
 func main() {
 	albumServiceDependency, sqlDB := initializeDependencies()
 	defer sqlDB.Close()
+
+	ctx := context.Background()
+	rdb := config.SetUpRedisClient(ctx)
+	defer rdb.Close()
 
 	router := gin.Default()
 	router.SetTrustedProxies(nil)
