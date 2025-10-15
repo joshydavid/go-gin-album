@@ -31,7 +31,7 @@ func NewAlbumHandler(s *service.AlbumService) *AlbumHandler {
 // @Failure	500 {object} map[string]string "Internal Server Error"
 // @Router /albums [get]
 func (h *AlbumHandler) GetAllAlbums(c *gin.Context) {
-	albums, err := h.AlbumService.GetAllAlbums()
+	albums, err := h.AlbumService.GetAllAlbums(c.Request.Context())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -61,7 +61,7 @@ func (h *AlbumHandler) GetAlbumByID(c *gin.Context) {
 	}
 
 	uintID := uint(parsedID)
-	album, err := h.AlbumService.GetAlbumByID(&uintID)
+	album, err := h.AlbumService.GetAlbumByID(c.Request.Context(), &uintID)
 
 	if err != nil {
 		if strings.Contains(err.Error(), "album not found") {
@@ -96,7 +96,7 @@ func (h *AlbumHandler) DeleteAlbumByID(c *gin.Context) {
 	}
 
 	uintID := uint(parsedID)
-	_, err = h.AlbumService.DeleteAlbumById(&uintID)
+	_, err = h.AlbumService.DeleteAlbumById(c.Request.Context(), &uintID)
 
 	if err != nil {
 		if strings.Contains(err.Error(), "album not found") {
@@ -128,7 +128,7 @@ func (h *AlbumHandler) AddAlbum(c *gin.Context) {
 		return
 	}
 
-	_, err := h.AlbumService.AddAlbum(newAlbum)
+	_, err := h.AlbumService.AddAlbum(c.Request.Context(), newAlbum)
 
 	if err != nil {
 		if strings.Contains(err.Error(), "cannot be empty") {

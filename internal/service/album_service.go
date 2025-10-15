@@ -25,8 +25,7 @@ func NewAlbumService(repo repository.AlbumRepository, rdb *redis.Client) *AlbumS
 	}
 }
 
-func (s *AlbumService) GetAllAlbums() ([]m.Album, error) {
-	ctx := context.Background()
+func (s *AlbumService) GetAllAlbums(ctx context.Context) ([]m.Album, error) {
 	cachedData, err := s.RedisClient.Get(ctx, c.AllAlbumsCacheKey).Bytes()
 	if err == nil {
 		var albums []m.Album
@@ -48,12 +47,11 @@ func (s *AlbumService) GetAllAlbums() ([]m.Album, error) {
 	return albums, nil
 }
 
-func (s *AlbumService) GetAlbumByID(id *uint) (*m.Album, error) {
+func (s *AlbumService) GetAlbumByID(ctx context.Context, id *uint) (*m.Album, error) {
 	if id == nil {
 		return nil, errors.New(c.InvalidAlbumID)
 	}
 
-	ctx := context.Background()
 	albumKey := fmt.Sprintf(c.AlbumCacheKey, *id)
 	cachedData, err := s.RedisClient.Get(ctx, albumKey).Bytes()
 	if err == nil {
@@ -80,13 +78,12 @@ func (s *AlbumService) GetAlbumByID(id *uint) (*m.Album, error) {
 	return album, nil
 }
 
-func (s *AlbumService) DeleteAlbumById(id *uint) (string, error) {
+func (s *AlbumService) DeleteAlbumById(ctx context.Context, id *uint) (string, error) {
 	err := s.Repo.DeleteByID(id)
 	if err != nil {
 		return "", err
 	}
 
-	ctx := context.Background()
 	albumKey := fmt.Sprintf(c.AlbumCacheKey, *id)
 	s.RedisClient.Del(ctx, albumKey)
 	s.RedisClient.Del(ctx, c.AllAlbumsCacheKey)
@@ -94,7 +91,7 @@ func (s *AlbumService) DeleteAlbumById(id *uint) (string, error) {
 	return c.AlbumDeleted, nil
 }
 
-func (s *AlbumService) AddAlbum(newAlbum m.Album) (string, error) {
+func (s *AlbumService) AddAlbum(ctx context.Context, newAlbum m.Album) (string, error) {
 	if newAlbum.Title == "" {
 		return "", errors.New(c.AlbumTitleEmpty)
 	}
@@ -104,7 +101,7 @@ func (s *AlbumService) AddAlbum(newAlbum m.Album) (string, error) {
 		return "", err
 	}
 
-	s.RedisClient.Del(context.Background(), c.AllAlbumsCacheKey)
+	s.RedisClient.Del(ctx, c.AllAlbumsCacheKey)
 
 	return c.AlbumAdded, nil
 }
