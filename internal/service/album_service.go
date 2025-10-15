@@ -14,19 +14,19 @@ import (
 )
 
 type AlbumService struct {
-	Repo        repository.AlbumRepository
-	RedisClient *redis.Client
+	Repo  repository.AlbumRepository
+	Cache redis.Cmdable
 }
 
-func NewAlbumService(repo repository.AlbumRepository, rdb *redis.Client) *AlbumService {
+func NewAlbumService(repo repository.AlbumRepository, cache redis.Cmdable) *AlbumService {
 	return &AlbumService{
-		Repo:        repo,
-		RedisClient: rdb,
+		Repo:  repo,
+		Cache: cache,
 	}
 }
 
 func (s *AlbumService) GetAllAlbums(ctx context.Context) ([]m.Album, error) {
-	cachedData, err := s.RedisClient.Get(ctx, c.AllAlbumsCacheKey).Bytes()
+	cachedData, err := s.Cache.Get(ctx, c.AllAlbumsCacheKey).Bytes()
 	if err == nil {
 		var albums []m.Album
 		if err := json.Unmarshal(cachedData, &albums); err == nil {
@@ -41,7 +41,7 @@ func (s *AlbumService) GetAllAlbums(ctx context.Context) ([]m.Album, error) {
 
 	jsonAlbums, err := json.Marshal(albums)
 	if err == nil {
-		s.RedisClient.Set(ctx, c.AllAlbumsCacheKey, jsonAlbums, c.DefaultTTLMinutes*time.Minute)
+		s.Cache.Set(ctx, c.AllAlbumsCacheKey, jsonAlbums, c.DefaultTTLMinutes*time.Minute)
 	}
 
 	return albums, nil
@@ -53,7 +53,7 @@ func (s *AlbumService) GetAlbumByID(ctx context.Context, id *uint) (*m.Album, er
 	}
 
 	albumKey := fmt.Sprintf(c.AlbumCacheKey, *id)
-	cachedData, err := s.RedisClient.Get(ctx, albumKey).Bytes()
+	cachedData, err := s.Cache.Get(ctx, albumKey).Bytes()
 	if err == nil {
 		var album m.Album
 		if err := json.Unmarshal(cachedData, &album); err == nil {
@@ -72,7 +72,7 @@ func (s *AlbumService) GetAlbumByID(ctx context.Context, id *uint) (*m.Album, er
 
 	jsonAlbum, err := json.Marshal(album)
 	if err == nil {
-		s.RedisClient.Set(ctx, albumKey, jsonAlbum, c.DefaultTTLMinutes*time.Minute)
+		s.Cache.Set(ctx, albumKey, jsonAlbum, c.DefaultTTLMinutes*time.Minute)
 	}
 
 	return album, nil
@@ -85,8 +85,8 @@ func (s *AlbumService) DeleteAlbumById(ctx context.Context, id *uint) (string, e
 	}
 
 	albumKey := fmt.Sprintf(c.AlbumCacheKey, *id)
-	s.RedisClient.Del(ctx, albumKey)
-	s.RedisClient.Del(ctx, c.AllAlbumsCacheKey)
+	s.Cache.Del(ctx, albumKey)
+	s.Cache.Del(ctx, c.AllAlbumsCacheKey)
 
 	return c.AlbumDeleted, nil
 }
@@ -101,7 +101,7 @@ func (s *AlbumService) AddAlbum(ctx context.Context, newAlbum m.Album) (string, 
 		return "", err
 	}
 
-	s.RedisClient.Del(ctx, c.AllAlbumsCacheKey)
+	s.Cache.Del(ctx, c.AllAlbumsCacheKey)
 
 	return c.AlbumAdded, nil
 }
