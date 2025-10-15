@@ -11,6 +11,7 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
+	"github.com/redis/go-redis/v9"
 )
 
 // @title           Music Album API
@@ -31,12 +32,12 @@ import (
 // @externalDocs.description  OpenAPI
 // @externalDocs.url          https://swagger.io/resources/open-api/
 func main() {
-	albumServiceDependency, sqlDB := initializeDependencies()
-	defer sqlDB.Close()
-
 	ctx := context.Background()
 	rdb := config.SetUpRedisClient(ctx)
 	defer rdb.Close()
+
+	albumServiceDependency, sqlDB := initializeDependencies(rdb)
+	defer sqlDB.Close()
 
 	router := gin.Default()
 	router.SetTrustedProxies(nil)
@@ -45,7 +46,7 @@ func main() {
 	server.RunServer(router)
 }
 
-func initializeDependencies() (*service.AlbumService, *sql.DB) {
+func initializeDependencies(rdb *redis.Client) (*service.AlbumService, *sql.DB) {
 	dbConfig := config.LoadDBConfig()
 	gormDB, err := db.ConnectDB(dbConfig)
 	if err != nil {
@@ -55,7 +56,7 @@ func initializeDependencies() (*service.AlbumService, *sql.DB) {
 	if err != nil {
 		log.Fatalf("Failed to get generic database object: %v", err)
 	}
-	albumService := db.InitializeServices(gormDB)
+	albumService := db.InitializeServices(gormDB, rdb)
 
 	return albumService, sqlDB
 }
