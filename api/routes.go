@@ -8,9 +8,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRoutes(router *gin.Engine, albumService *service.AlbumService) {
+func SetupRoutes(router *gin.Engine, albumService *service.AlbumService, rateLimitMiddleware gin.HandlerFunc) {
 	albumHandler := handler.NewAlbumHandler(albumService)
 	v1 := router.Group(constant.BasePath)
+	v1.Use(rateLimitMiddleware)
 	{
 		v1.GET(constant.HealthCheck, handler.GetHealthCheck)
 		v1.GET(constant.Albums, albumHandler.GetAllAlbums)
