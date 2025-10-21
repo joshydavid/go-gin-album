@@ -89,6 +89,11 @@ func initializeRateLimiter() gin.HandlerFunc {
 		tokenRefillRate = 1
 	}
 
+	if burstSize <= 0 {
+		log.Println("Warning: Calculated BURST_SIZE is non-positive. Setting to default burst size.")
+		burstSize = defaultBurst
+	}
+
 	rateLimiter := rate.NewLimiter(rate.Limit(tokenRefillRate), burstSize)
 	rateLimitMiddleware := middleware.RateLimiter(rateLimiter)
 
