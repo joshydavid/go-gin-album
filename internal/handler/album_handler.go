@@ -20,7 +20,7 @@ func NewAlbumHandler(s *service.AlbumService) *AlbumHandler {
 	return &AlbumHandler{AlbumService: s}
 }
 
-// GetAllAlbums godoc (Renamed from GetAlbums for clarity/convention)
+// GetAllAlbums
 // @Summary List all albums
 // @Schemes
 // @Description Retrieves a list of all music albums from the collection.
@@ -40,7 +40,7 @@ func (h *AlbumHandler) GetAllAlbums(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, response)
 }
 
-// GetAlbumByID godoc
+// GetAlbumByID
 // @Summary Get album by ID
 // @Schemes
 // @Description Retrieve a single music album by its unique ID.
@@ -75,7 +75,7 @@ func (h *AlbumHandler) GetAlbumByID(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, response)
 }
 
-// DeleteAlbumByID godoc
+// DeleteAlbumByID
 // @Summary Delete an album
 // @Schemes
 // @Description Deletes a single music album record by its unique ID.
