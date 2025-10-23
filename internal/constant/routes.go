@@ -2,7 +2,7 @@ package constant
 
 const (
 	BasePath    = "/api/v1"
-	Swagger     = "/swagger/*any"
+	Doc         = "/docs/*any"
 	HealthCheck = "/healthcheck"
 	Albums      = "/albums"
 	AlbumByID   = "/albums/:id"

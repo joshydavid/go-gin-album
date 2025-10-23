@@ -1,11 +1,13 @@
 # 🐹 Go (Golang) Gin Album API
 
-A small example REST API written in Go using the Gin web framework. This project demonstrates basic CRUD-style endpoints for managing a simple collection of music albums.
+A small example REST API written in Go using the Gin web framework. This project provides API endpoints for managing a simple collection of music albums.
 
 ## 🚀 Features
 
 - Lightweight HTTP server using Go (Golang) Gin
 - Endpoints for listing, retrieving, creating, and deleting albums
+- Redis for caching
+- Rate Limiting for API endpoints to prevent abuse
 - Data stored in PostgreSQL
 - API documentation via Swagger
 
@@ -39,6 +41,9 @@ Then run it:
 ```sh
 ./bin/go-gin-album
 ```
+
+## 📁 API documentation
+`http://localhost:8080/docs/index.html`
 
 ## 💬 API Endpoints
 
